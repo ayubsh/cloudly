@@ -3,12 +3,15 @@ import GitHubStrategy from "passport-github2"
 import User from "../models/User"
 
 passport.serializeUser((user, done) => {
+  console.log("from serializeUser: ", user)
   done(null, user.id)
 })
 
 passport.deserializeUser(async (id, done) => {
-  const found_user = await User.findOne({githubId: id})
-  done(null, found_user)
+  const user = await User.findById(id)
+  console.log(id)
+  console.log("form deserializeUser: ", user)
+  done(null, user)
 })
 
 passport.use(new GitHubStrategy.Strategy({

@@ -5,6 +5,7 @@ import mongoose from "mongoose"
 
 import "./services/passport";
 import authRouter from "./routes/github-rout"
+import passport from "passport";
 
 (async () =>{
     await mongoose.connect("mongodb://localhost:27017/authdb")
@@ -16,6 +17,9 @@ import authRouter from "./routes/github-rout"
     maxAge: 24*60*60*1000
   }))
 
+  app.use(passport.initialize())
+  app.use(passport.session())
+  app.use(passport.authorize('session'))
 
   // register regenerate & save after the cookieSession middleware initialization
 
