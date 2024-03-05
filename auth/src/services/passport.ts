@@ -19,12 +19,16 @@ passport.use(new GitHubStrategy.Strategy({
   async (accessToken: String, refreshToken: String, profile: Profile, done: (err: Error | null, user: any) => void) => {
     const githubId = profile.id
     const user_exist = await User.findOne({githubId})
+    console.log(user_exist)
 
-    if(user_exist)
+    if(user_exist){
       done(null, user_exist)
+    }else {
+      const user = await User.create({githubId})
+      done(null, user)
 
-    const user = await User.create({githubId})
-    done(null, user)
+    }
+
   }
 ))
 

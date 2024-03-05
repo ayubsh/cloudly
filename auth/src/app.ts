@@ -1,6 +1,5 @@
-import express from "express"
-import passport from "passport";
-import session from "express-session";
+import express, {Request} from "express"
+import cookieSession from "cookie-session";
 
 import mongoose from "mongoose"
 
@@ -11,13 +10,35 @@ import authRouter from "./routes/github-rout"
     await mongoose.connect("mongodb://localhost:27017/authdb")
     console.log("db connected")
     const app = express()
-    app.use(session({
-      secret: "somesecret",
-      resave: false,
-      saveUninitialized: true,
-      cookie: { secure: true, maxAge: 600}
-    }))
+    app.use(cookieSession({
+    name: 'session',
+    keys: ["somesessionsercrets"],
+    maxAge: 24*60*60*1000
+  }))
 
+
+  // register regenerate & save after the cookieSession middleware initialization
+
+app.use(function(request: Request, _, next) {
+    if (request.session && !request.session.regenerate) {
+      //@ts-ignore
+        request.session.regenerate = (cb) => {
+
+      //@ts-ignore
+            cb()
+        }
+    }
+    if (request.session && !request.session.save) {
+
+      //@ts-ignore
+        request.session.save = (cb) => {
+
+      //@ts-ignore
+            cb()
+        }
+    }
+    next()
+})
 
     app.use("/auth/", authRouter)
 
