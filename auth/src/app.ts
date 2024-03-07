@@ -1,11 +1,12 @@
 import express, {Request} from "express"
 import cookieSession from "cookie-session";
-
+import passport from "passport";
 import mongoose from "mongoose"
 
 import "./services/passport";
 import authRouter from "./routes/github-rout"
-import passport from "passport";
+import reposRouter from "./routes/repos-route";
+
 
 (async () =>{
     await mongoose.connect("mongodb://localhost:27017/authdb")
@@ -45,6 +46,7 @@ app.use(function(request: Request, _, next) {
 })
 
     app.use("/auth/", authRouter)
+    app.use("/repos", reposRouter) 
 
     app.get("/", (_, res) => {
       res.send("Yaya yoo")

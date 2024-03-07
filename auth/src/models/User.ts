@@ -1,13 +1,14 @@
 import {Document, Schema, model} from "mongoose";
-import { type } from "os";
 
 
 export type UserDocument = Document & {
-  githubId: String
+  githubId: String,
+  repo_url: String
 }
 
 const userSchema = new Schema<UserDocument>({
-  githubId: {type: String, required: true}
+  githubId: {type: String, required: true},
+  repo_url: {type: String, required: true}
 })
 
 
