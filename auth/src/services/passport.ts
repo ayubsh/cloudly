@@ -1,7 +1,10 @@
 import passport, { Profile } from "passport"
 import GitHubStrategy from "passport-github2"
+import dotenv from "dotenv"
+
 import User from "../models/User"
 
+dotenv.config()
 
 interface ProfileI extends Profile {
   _json: {
@@ -22,8 +25,8 @@ passport.deserializeUser(async (id, done) => {
 })
 
 passport.use(new GitHubStrategy.Strategy({
-  clientID: "",
-  clientSecret: "",
+  clientID: `${process.env.CLIENT_ID}`,
+  clientSecret: `${process.env.CLIENT_SECRET}`,
   callbackURL: "/auth/github/callback"
 }, 
   async (accessToken: String, refreshToken: String, profile: ProfileI, done: (err: Error | null, user: any) => void) => {

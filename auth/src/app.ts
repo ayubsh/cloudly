@@ -2,6 +2,7 @@ import express, {Request} from "express"
 import cookieSession from "cookie-session";
 import passport from "passport";
 import mongoose from "mongoose"
+import cors from "cors"
 
 import "./services/passport";
 import authRouter from "./routes/github-rout"
@@ -21,6 +22,7 @@ import reposRouter from "./routes/repos-route";
   app.use(passport.initialize())
   app.use(passport.session())
   app.use(passport.authorize('session'))
+  app.use(cors())
 
   // register regenerate & save after the cookieSession middleware initialization
 
