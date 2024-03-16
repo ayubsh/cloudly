@@ -1,0 +1,11 @@
+<h2>Choose Project to deploy</h2>
+<ul>
+  {{#each repos}}
+    <li>
+    {{#each this}}
+      <a href="#" onClick="handleRepoClick('{{url}}')"><h4>{{name}}</h4></a>
+    {{/each}}
+    </li>
+  {{/each}}
+</ul>
+

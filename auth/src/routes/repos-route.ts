@@ -50,7 +50,7 @@ router.get("/all", async (req: Request, res: Response) => {
     const githubId = req.user?.githubId
     const repos = await Repos.find({githubId})
 
-    res.send(repos)
+    res.json(repos)
   } catch (error) {
     res.send(error)
   }
