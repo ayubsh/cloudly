@@ -1,6 +1,12 @@
 import express from "express";
 import cors from "cors"
 
+import dotenv from "dotenv"
+
+dotenv.config()
+
+
+
 import uploadRoutes from "./routes/uploadRoutes"
 
 const app = express();
@@ -10,4 +16,4 @@ app.use(cors())
 
 app.use("/upload", uploadRoutes)
 
-app.listen(5001, () => console.log("UPLOAD ON 5001"))
+app.listen(5001, () => console.log("UPLOAD ON 5001", process.env.R2_ACCESS_KEY))

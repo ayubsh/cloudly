@@ -3,6 +3,7 @@ import { Router, Response, Request } from "express";
 import path from "path";
 import fs from "fs";
 import { getName } from "../utils/utils";
+import { uploadDir, uploadFile } from "../utils/s3";
 const router = Router();
 
 
@@ -21,8 +22,8 @@ router.post("/", async (req: Request, res: Response) => {
     //TODO do git pull
     res.status(200).send("pull request")
   } else {
-    const rsp = await simpleGit().clone(url, local_path)
-    console.log(rsp)
+    await simpleGit().clone(url, local_path)
+    uploadDir(local_path, uploadFile)
 
     res.status(200).send("clone request")
   }
