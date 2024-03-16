@@ -11,4 +11,3 @@ app.use(cors())
 app.use("/upload", uploadRoutes)
 
 app.listen(5001, () => console.log("UPLOAD ON 5001"))
-

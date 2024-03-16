@@ -21,7 +21,8 @@ router.post("/", async (req: Request, res: Response) => {
     //TODO do git pull
     res.status(200).send("pull request")
   } else {
-    await simpleGit().clone(url, local_path)
+    const rsp = await simpleGit().clone(url, local_path)
+    console.log(rsp)
 
     res.status(200).send("clone request")
   }
