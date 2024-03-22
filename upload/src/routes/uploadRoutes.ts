@@ -28,8 +28,9 @@ router.post("/", async (req: Request, res: Response) => {
     console.log("file exist")
     res.status(200).send("pull request")
   } else {
-    await simpleGit().clone(url, local_path)
-    uploadDir(local_path, uploadFile)
+//    await simpleGit().clone(url, local_path)
+  //  uploadDir(local_path, uploadFile)
+    console.log(`${rs?.username}/${rs?.reponame}`)
     publisher.publish("deploy", `${rs?.username}/${rs?.reponame}`)
 
     res.status(200).send("Uploaded ...")
