@@ -4,6 +4,8 @@
   "description": "",
   "main": "src/app.ts",
   "scripts": {
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node build/app.js",
     "start:dev": "npx nodemon"
   },
   "author": "ayub sheikh",
@@ -11,6 +13,7 @@
   "devDependencies": {
     "@types/node": "^20.11.29",
     "nodemon": "^3.1.0",
+    "rimraf": "^5.0.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
   },
