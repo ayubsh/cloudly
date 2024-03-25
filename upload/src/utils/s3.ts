@@ -2,14 +2,14 @@ import {S3} from "aws-sdk"
 import fs from "fs"
 import path from "path"
 import dotenv from "dotenv"
-import { ListBucketsCommand, S3Client } from "@aws-sdk/client-s3"
+import mime from "mime-types"
 
 dotenv.config()
 
 const s3 = new S3({
   accessKeyId: process.env.R2_ACCESS_KEY,
   secretAccessKey: process.env.R2_SECRET_KEY,
-  endpoint: process.env.R2_ENDPOINT
+  //endpoint: process.env.R2_ENDPOINT
 })
 
 /*
@@ -45,15 +45,15 @@ export const uploadDir = (dir_path: string, callback: (fname: string, fpath: str
 
 export const uploadFile = async (fname: string, fpath: string) => {
   const fcontent = fs.readFileSync(fname)
-  const dirname_len = __dirname.length + 1
-  const sliced_path = fname.slice(dirname_len - 10)
+  const sliced_path = fname.slice(__dirname.length - 5)
   console.log(sliced_path)
   
   try {
      const rsp = await s3.upload({
       Body: fcontent,
       Bucket: "cloudly-bucket",
-      Key: sliced_path
+      Key: `repos/${sliced_path}`,
+      ContentType: `${mime.lookup(sliced_path)}`
     }).promise()
 
     console.log(rsp)   

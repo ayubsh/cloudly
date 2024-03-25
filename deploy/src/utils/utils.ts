@@ -1,52 +1,29 @@
-import { throws } from "assert"
 import { S3 } from "aws-sdk"
 import fs from "fs"
 import dotenv from "dotenv"
 import path, { dirname, resolve } from "path"
-import { error, trace } from "console"
+import mime from "mime-types"
+import Jabber from "jabber"
+import { createClient } from "redis"
+
+
 import { exec } from "child_process"
 
 dotenv.config()
 
+const publisher = createClient()
+.on("error", err => console.error("eror on pulishing generateName: ", err))
+.on('ready', () => console.log("ready to publish"))
+publisher.connect()
+
+const j = new Jabber()
+const RANDOM_WORD = j.createWord(4)
+
 const s3 = new S3({
   accessKeyId: process.env.R2_ACCESS_KEY,
   secretAccessKey: process.env.R2_SECRET_KEY,
-  endpoint: process.env.R2_ENDPOINT
+  //endpoint: process.env.R2_ENDPOINT
 })
-
-/*
-export const dowloadFiles = async (fname: string) => {
-  const params = {
-    Bucket: "cloudly-bucket",
-    Prefix: `repos/${fname}`
-  }
-
-  s3.listObjectsV2(params, (err, data) => {
-    if(err) throw err;
-
-    data.Contents?.map(file => {
-      let params = {
-        Bucket: "cloudly-bucket",
-        Key: `${file.Key}`
-      }
-
-      if(file.Key?.endsWith('/')){
-            const finalOutputPath = path.join(__dirname, file.Key!);
-            const outputFile = fs.createWriteStream(finalOutputPath);
-            const dirName = path.dirname(finalOutputPath);
-            if (!fs.existsSync(dirName)){
-                fs.mkdirSync(dirName, { recursive: true });
-            }
-            s3.getObject(params).createReadStream().pipe(outputFile).on("close", () => console.log("Done"))
-      //  Key: 'repos/ayubsh/ayubsh/README.md',
-
-
-        }
-     })
-  })
-}
-
-*/
 
 
 export async function dowloadFiles(prefix: string) {
@@ -61,6 +38,8 @@ export async function dowloadFiles(prefix: string) {
     
     // 
     const allPromises = allFiles.Contents?.map(async ({Key}) => {
+
+    console.log(Key)
         return new Promise(async (resolve) => {
             if (!Key) {
                 resolve("");
@@ -80,9 +59,9 @@ export async function dowloadFiles(prefix: string) {
             })
         })
     }) || []
-    console.log("awaiting");
 
     await Promise.all(allPromises?.filter(x => x !== undefined));
+    console.log("awaiting");
 }
 
 export const buildProject = (fname: string) => {
@@ -116,20 +95,39 @@ export const uploadDir = (dir_path: string, callback: (fname: string, fpath: str
   
 }
 
+const generateName = (fname: string) => {
+  const splited = fname.split("/");
+  const uname = splited[0]
+  const rname = splited[1]
+  const len_of_rname_unama = uname.length + rname.length;
+  const res_of_fname = fname.slice(len_of_rname_unama + 2)
+  publisher.publish("url", `http://${uname}-${RANDOM_WORD}.localhost:5003/`)
+  return `${uname}-${RANDOM_WORD}/${res_of_fname}`
+}
 // /home/ayub/prod/cloudly/upload/src/utils
 // /home/ayub/prod/cloudly/upload/repos/ayubsh/alx-backend-storage/0x00-MySQL_Advanced/0-uniq_users.sql
 
 export const uploadFile = async (fname: string, fpath: string) => {
   const fcontent = fs.readFileSync(fname)
-  const dirname_len = __dirname.length + 1
-  const sliced_path = fname.slice(dirname_len + 6)
-  console.log(sliced_path)
+  const sliced_path = fname.slice(__dirname.length + 7)
+  //console.log(sliced_path) // ayubsh/test-project-for-cloudly/dist/assets/index-BPgokE0a.js
+  console.log(generateName(sliced_path))
+
+  let fextension = path.extname(fname).split(".")[1]
+  let content_type = ""
+
+  if (fextension === "js"){
+    content_type = "application/javascript"
+  }else {
+    fextension = `text/${fextension}`
+  }
   
   try {
      const rsp = await s3.upload({
       Body: fcontent,
       Bucket: "cloudly-bucket",
-      Key: `output/${sliced_path}`
+      Key: `output/${generateName(sliced_path)}`,
+      ContentType: `${mime.lookup(fname)}`
     }).promise()
 
     console.log(rsp)   

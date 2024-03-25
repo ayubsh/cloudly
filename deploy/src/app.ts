@@ -15,7 +15,7 @@ const app = express();
   subscriber.subscribe("deploy", async (ms) => {
     await dowloadFiles(ms)
     await buildProject(ms)
-    uploadDir(`${__dirname}/utils/repos/${ms}/dist`, uploadFile)
+    uploadDir(`${__dirname}/utils/repos/${ms}/build`, uploadFile)
   })
 
   app.listen(5002, () => console.log("DEPLOY SERVICE ON 5002"))
