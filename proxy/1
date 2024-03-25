@@ -1,0 +1,29 @@
+const express = require('express')
+const httpProxy = require('http-proxy')
+
+const app = express()
+
+const BASE_PATH = 'https://cloudly-bucket.s3.us-east-1.amazonaws.com/output/ayubsh/test-project-for-cloudly/dist/index.html/'
+
+const proxy = httpProxy.createProxy()
+
+app.use((req, res) => {
+    const hostname = req.hostname;
+    const subdomain = hostname.split('.')[0];
+
+    // Custom Domain - DB Query
+
+    const resolvesTo = `${BASE_PATH}/${subdomain}`
+
+    return proxy.web(req, res, { target: BASE_PATH, changeOrigin: true })
+
+})
+
+proxy.on('proxyReq', (proxyReq, req, res) => {
+    const url = req.url;
+    if (url === '/')
+        proxyReq.path += 'index.html'
+
+})
+
+app.listen(5003, () => console.log(`Reverse Proxy Running..5003`))
