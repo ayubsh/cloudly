@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+  namespace: default
+  labels:
+    app: auth
+spec:
+  selector:
+    matchLabels:
+      app: auth
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container:  auth-depl
+      labels:
+        app: auth
+    spec:
+      # initContainers:
+        # Init containers are exactly like regular containers, except:
+          # - Init containers always run to completion.
+          # - Each init container must complete successfully before the next one starts.
+      containers:
+      - name: auth
+        image: ayubsh/auth-cloudly
+        env:
+          - name: MONGO_URI
+            value: 'mongodb://auth-mongo-srv:27017/authdb'
+        ports:
+          - containerPort: 5000
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+  namespace: default
+spec:
+  selector:
+    app: auth
+  type: ClusterIP
+  ports:
+  - name: auth
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
+---
+
