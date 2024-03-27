@@ -1,0 +1,34 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./k8s/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: ayubsh/auth-cloudly
+      context: ./auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "/*.ts"
+            dest: .
+    - image: ayubsh/upload-cloudly
+      context: ./upload
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*"
+            dest: .
+    - image: ayubsh/deploy-cloudly
+      context: ./deploy
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*"
+            dest: .
