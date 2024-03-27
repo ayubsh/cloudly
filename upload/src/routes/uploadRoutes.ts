@@ -8,7 +8,9 @@ import { getName } from "../utils/utils";
 import { uploadDir, uploadFile } from "../utils/s3";
 
 const router = Router();
-const publisher = createClient()
+const publisher = createClient({
+  url: process.env.REDIS_URI
+})
 publisher.on("error", err => console.log("REDIS ERROR: ", err))
 publisher.connect()
 
@@ -21,21 +23,24 @@ router.post("/", async (req: Request, res: Response) => {
   const url = req.body.url
   const rs = getName(url)
 
-  const local_path = path.join( __dirname, "../..") + `/repos/${rs?.username}/${rs?.reponame}`
+  console.log(url, rs)
 
+  const local_path = path.join( __dirname, "../..") + `/repos/${rs?.username}/${rs?.reponame}`
+  console.log(local_path)
   if (fs.existsSync(local_path)) {
     //TODO do git pull
     console.log("file exist")
     res.status(200).send("pull request")
   } else {
+    /*
     await simpleGit().clone(url, local_path)
     uploadDir(local_path, uploadFile)
+    */
     setTimeout(() => {
       console.log("waiting for upload")
       publisher.publish("deploy", `${rs?.username}/${rs?.reponame}`)
     }, 5000)
     console.log(`${rs?.username}/${rs?.reponame}`)
-
     res.status(200).send("Uploaded ...")
   }
   

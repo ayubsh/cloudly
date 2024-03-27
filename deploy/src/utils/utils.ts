@@ -11,7 +11,9 @@ import { exec } from "child_process"
 
 dotenv.config()
 
-const publisher = createClient()
+const publisher = createClient({
+  url: process.env.REDIS_URI!
+})
 .on("error", err => console.error("eror on pulishing generateName: ", err))
 .on('ready', () => console.log("ready to publish"))
 publisher.connect()

@@ -18,7 +18,6 @@ const app = express();
   app.use(cors())
 
   app.use("/upload", uploadRoutes)
-
   app.listen(5001, () => console.log("UPLOAD ON 5001", process.env.R2_ACCESS_KEY))
 })()
 
