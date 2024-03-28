@@ -39,7 +39,13 @@ resource "aws_s3_bucket_policy" "cloudly-bucket" {
     Version = "2012-10-17",
     Statement = [
       {
-        sid       = "PublicReadGetObject",
+        Effect    = "Allow",
+        Principal = "*",
+        Action    = "s3:GetObject",
+        Resource  = "arn:aws:s3:::${aws_s3_bucket.cloudly-bucket.bucket}/*",
+      },
+      {
+        Sid       = "PublicReadGetObject",
         Effect    = "Allow",
         Principal = "*",
         Action    = "s3:GetObject",
