@@ -3,18 +3,18 @@ resource "aws_s3_bucket" "cloudly-bucket" {
 }
 
 resource "aws_s3_bucket_public_access_block" "cloudly-bucket" {
-  bucket                 = aws_s3_bucket.cloudly-bucket.id
-  block_public_acls      = false
-  block_public_policy    = false
-  ignore_public_acls     = false
+  bucket                  = aws_s3_bucket.cloudly-bucket.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
   restrict_public_buckets = false
 }
 
 resource "aws_s3_bucket_website_configuration" "cloudly-bucket" {
-  bucket         = aws_s3_bucket.cloudly-bucket.id
+  bucket = aws_s3_bucket.cloudly-bucket.id
   index_document {
     suffix = "index.html"
-  } 
+  }
   error_document {
     key = "error.html"
   }
