@@ -1,0 +1,63 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-depl
+  namespace: default
+  labels:
+    app: deploy
+spec:
+  selector:
+    matchLabels:
+      app: deploy
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: deploy
+    spec:
+      # initContainers:
+        # Init containers are exactly like regular containers, except:
+          # - Init containers always run to completion.
+          # - Each init container must complete successfully before the next one starts.
+      containers:
+      - name: deploy-cloudly
+        image: ayubsh/deploy-cloudly
+        env:
+          - name: REDIS_URI
+            value: 'redis://redis-srv:6379'
+          - name: R2_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: r2secretkey
+                key: R2_SECRET_KEY
+          - name: R2_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: r2accesskey
+                key: R2_ACCESS_KEY
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: deploy-srv
+  namespace: default
+spec:
+  selector:
+    app: deploy
+  type: ClusterIP
+  ports:
+  - name: deploy
+    protocol: TCP
+    port: 5002
+    targetPort: 5002
+---
+
