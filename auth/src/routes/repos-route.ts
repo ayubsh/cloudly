@@ -6,6 +6,7 @@ const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
   const url = req.user?.repo_url as ""
+  console.log(url)
 
   try {
     
@@ -37,7 +38,7 @@ router.get("/", async (req: Request, res: Response) => {
     })
 
     //@ts-ignore
-    res.send()
+    res.send("yay")
   } catch (error) {
     res.send(error)
   }

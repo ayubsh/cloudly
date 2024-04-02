@@ -33,7 +33,9 @@ passport.use(new GitHubStrategy.Strategy({
    // console.log(profile)
     const githubId = profile.id
     const repo_url = profile._json.repos_url;
+    const username = profile.username
     //console.log(repo_url)
+    console.log("profile: -------------------------------------------------------", profile)
 
     const user_exist = await User.findOne({githubId})
     //console.log(user_exist)
@@ -41,7 +43,7 @@ passport.use(new GitHubStrategy.Strategy({
     if(user_exist){
       done(null, user_exist)
     }else {
-      const user = await User.create({githubId, repo_url})
+      const user = await User.create({githubId, repo_url, username})
       done(null, user)
 
     }

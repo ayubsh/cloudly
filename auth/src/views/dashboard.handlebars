@@ -1,3 +1,4 @@
+<!--
 <h2>Choose Project to deploy</h2>
 <ul>
   {{#each repos}}
@@ -8,4 +9,23 @@
     </li>
   {{/each}}
 </ul>
+-->
 
+<h1 class="mt-5">Welcome: <span class="text-capitalize">{{user}}</span></h1>
+<div class="form-group mt-5">
+    <label for="input-datalist">Choose Project To Deploy</label>
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="your repos" list="list-timezone" id="input-datalist" onkeydown="handleEnterPress(event)">
+      <span class="input-group-text" id="basic-addon2">
+      <Button class="btn btn-outline fa fa-refresh" onClick="handlerRepoRefresh()"></Button>
+      </span>
+    </div>
+
+    <datalist id="list-timezone">
+      {{#each repos}}
+          {{#each this}}
+            <option>{{name}} <p><small>{{url}}</small></p></option>
+            {{/each}}
+        {{/each}}
+    </datalist>
+</div>

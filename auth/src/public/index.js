@@ -1,3 +1,12 @@
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+
 const handleRepoClick = async (repoName) => {
   const url = "http://localhost:5001/upload"
   const bdy = {
@@ -16,3 +25,22 @@ const handleRepoClick = async (repoName) => {
     console.error(error)
   }
  }
+
+function handleEnterPress(event) {
+    if (event.keyCode === 13) {
+      // Get the entered repo name
+    const input = document.getElementById("input-datalist")
+      const repoName = input.value;
+      const repourl = repoName.split(" ")[1]
+      input.value = "";
+      handleRepoClick(repourl)
+    }
+  }
+
+const handlerRepoRefresh = async () => {
+  const rsp = await fetch("http://localhost:5000/repos", {
+    credentials: 'include',
+  })
+  window.location.reload()
+  console.log(rsp)
+}
