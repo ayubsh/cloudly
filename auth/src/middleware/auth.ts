@@ -4,7 +4,7 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
   if(req.isAuthenticated()){
     return next()
   }else {
-    res.redirect('/')
+    res.redirect('/login')
   }
 }
 

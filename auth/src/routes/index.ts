@@ -16,7 +16,7 @@ router.get("/login", notAuthenticated, (req: Request, res: Response) => {
 })
 
 //isAuthenticated
-router.get("/dashboard", async (req: Request, res: Response) => {
+router.get("/dashboard", isAuthenticated, async (req: Request, res: Response) => {
 
   await axios.get("http://localhost:5000/repos")
   const data = await Repos.find({githubId: req.user?.githubId}, {_id: 0, __v: 0})

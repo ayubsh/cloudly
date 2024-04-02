@@ -7,6 +7,10 @@ function myFunction() {
   }
 }
 
+const logout = async() => {
+  await fetch("http://localhost:5000/auth/github/logout")
+  window.redirect("/")
+}
 const handleRepoClick = async (repoName) => {
   const url = "http://localhost:5001/upload"
   const bdy = {
