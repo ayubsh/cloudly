@@ -32,3 +32,11 @@ build:
         manual:
           - src: "*"
             dest: .
+    - image: ayubsh/proxy-cloudly
+      context: ./proxy
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "*"
+            dest: .
