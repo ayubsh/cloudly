@@ -8,11 +8,11 @@ function myFunction() {
 }
 
 const logout = async() => {
-  await fetch("http://localhost:5000/auth/github/logout")
+  await fetch("/auth/github/logout")
   window.redirect("/")
 }
 const handleRepoClick = async (repoName) => {
-  const url = "http://localhost:5001/upload"
+  const url = "/upload"
   const bdy = {
     url: repoName
   }
@@ -42,7 +42,7 @@ function handleEnterPress(event) {
   }
 
 const handlerRepoRefresh = async () => {
-  const rsp = await fetch("http://localhost:5000/repos", {
+  const rsp = await fetch("/repos", {
     credentials: 'include',
   })
   window.location.reload()

@@ -12,7 +12,7 @@ import indexRouter from "./routes/index"
 import path from "path";
 
 (async () =>{
-    await mongoose.connect(process.env.MONGO_URI! || "mongodb://localhost:27017/authdb")
+    await mongoose.connect(process.env.MONGO_URI!)
     console.log("db connected")
     const app = express()
     app.use(cookieSession({
